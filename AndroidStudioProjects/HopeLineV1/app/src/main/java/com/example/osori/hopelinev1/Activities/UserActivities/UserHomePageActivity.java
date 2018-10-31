@@ -59,6 +59,7 @@ public class UserHomePageActivity extends AppCompatActivity {
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("HERE", "Map button pressed");
                 Intent intent = new Intent(v.getContext(), MapsActivity.class);
                 startActivity(intent);
             }

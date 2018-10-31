@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -69,13 +70,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     );
     private GoogleApiClient mGoogleApiClient;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private Button btnBack;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        btnBack = (Button)findViewById(R.id.btn_mapback);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getLocationPermission();
     }
 
@@ -111,16 +119,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mPlaceFilter
 //                .setCountry("CA")
 //                .build();
-        PendingResult<AutocompletePredictionBuffer> results =
-                Places.GeoDataApi
-                        .getAutocompletePredictions(mGoogleApiClient, "Hospital",
-                                LAT_LNG_BOUNDS, null);
+//        PendingResult<AutocompletePredictionBuffer> results =
+//                Places.GeoDataApi
+//                        .getAutocompletePredictions(mGoogleApiClient, "Hospital",
+//                                LAT_LNG_BOUNDS, null);
 
-        Log.d(TAG, "OnMapReady after pendingreuslt: " + results);
+//        Log.d(TAG, "OnMapReady after pendingreuslt: " + results);
         // This method should have been called off the main UI thread. Block and wait for at most 60s
         // for a result from the API.
 
-        AutocompletePredictionBuffer autocompletePredictions = results.await();
+//        AutocompletePredictionBuffer autocompletePredictions = results.await();
 
         Log.d(TAG, "OnMapReady after buffer");
         Log.d(TAG, "Getting hospital locations");
@@ -135,11 +143,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
             //Getting current location
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                LatLng seneca1 = new LatLng(43.7713923, -79.4987939);
+//                mMap.addMarker(new MarkerOptions().position(seneca1).title("Seneca"));
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(seneca1));
+//                mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+                Log.d(TAG, "returned");
                 return;
             }
 //            ImageView mPlacePicker = (ImageView)findViewById(R.id.mPlacePicker);
             mMap.setMyLocationEnabled(true);
-
+            Log.d(TAG, "set location");
 //            mPlacePicker.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {

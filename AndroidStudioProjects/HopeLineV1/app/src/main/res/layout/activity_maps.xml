@@ -13,11 +13,12 @@
         android:layout_height="match_parent"
         tools:context=".Activities.CommonActivities.MapsActivity" />
 
-    <ImageView
-        android:id="@+id/mPlacePicker"
+
+    <Button
+        android:id="@+id/btn_mapback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/ic_launcher"/>
+        android:text="Back "/>
 
 
 </RelativeLayout>
