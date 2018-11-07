@@ -60,7 +60,8 @@
         <activity
             android:name=".Activities.UserActivities.UserOptionsActivity"
             android:label="@string/title_activity_user_options"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".LoadingChatActivity"></activity>
     </application>
 
 </manifest>

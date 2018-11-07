@@ -4,21 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.CommonActivities.MainActivity"
-    android:background="@drawable/waterfall_background">
+    tools:context=".Activities.CommonActivities.MainActivity" >
+
 
     <Button
         android:id="@+id/btn_guestSignOn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign in as guest" />
+        android:text="Talk to Mentor" />
+
+
+    <ScrollView
+        android:id="@+id/scrollView_filters"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/btn_guestSignOn">
+        <RadioGroup
+            android:id="@+id/rb_topicList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+        </RadioGroup>
+    </ScrollView>
 
     <Button
         android:id="@+id/btn_userSignOn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign in as user"
-        android:layout_below="@+id/btn_guestSignOn"/>
+        android:layout_below="@+id/scrollView_filters"/>
 
     <Button
         android:id="@+id/btn_mentorSignOn"
