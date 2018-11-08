@@ -43,7 +43,8 @@ public class UserChatActivity extends AppCompatActivity{
     private ImageView btnReturn;
     private TextView mentorName;
     private HubConnection hubConnection = HubConnectionBuilder.create("https://hopelineapi.azurewebsites.net/v2/chathub").build();
-    private String userName;
+    private String room;
+    private String guestName;
     private ArrayList<String> topicsChosen;
 
     @Override
@@ -51,13 +52,15 @@ public class UserChatActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_chat);
 
+        guestName = getIntent().getStringExtra("guestName");
+        room = getIntent().getStringExtra("room");
         btnSend = (Button)findViewById(R.id.btn_send);
         inputBar = (EditText)findViewById(R.id.edt_chat_input);
         chatBoxScroll = (ScrollView)findViewById(R.id.txt_chat_box_scroll);
         chatBox = (LinearLayout)findViewById(R.id.txt_chat_box);
         btnReturn = (ImageView)findViewById(R.id.btn_chat_return);
         mentorName = (TextView)findViewById(R.id.txt_incoming_user_name);
-        userName = "Anon";
+
 
         boolean isTopicsEmpty = getIntent().getBooleanExtra("emptyTopics", false);
         if(isTopicsEmpty){
@@ -75,10 +78,6 @@ public class UserChatActivity extends AppCompatActivity{
             }
         });
 
-        hubConnection.on("NotifyUser", (connected)->{
-            Log.d("Connected", "User is: " + connected);
-        }, String.class);
-
         hubConnection.on("Load", (user, message)->{
             Log.d("Loading all messages", message);
             runOnUiThread(new Runnable() {
@@ -93,7 +92,7 @@ public class UserChatActivity extends AppCompatActivity{
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(!user.equals(userName)){
+                    if(!user.equals(guestName)){
                         TextView textView = new TextView(getApplicationContext());
                         textView.append(message);
                         chatBox.addView(textView);
@@ -108,7 +107,9 @@ public class UserChatActivity extends AppCompatActivity{
             public void onClick(View v) {
                 String userInput = inputBar.getText().toString();
                 try{
-                    hubConnection.send("sendMessage", "Anon", userInput, "room");
+                    hubConnection.send("SendMessage", guestName, userInput, room);
+
+                    Log.d("ChatHub", "room " + room + " guestname: " + guestName);
                     TextView textView = new TextView(v.getContext());
                     textView.setText("\n" + userInput);
                     textView.setGravity(Gravity.RIGHT);
@@ -124,21 +125,23 @@ public class UserChatActivity extends AppCompatActivity{
         });
         new HubConnectionTask().execute(hubConnection);
     }
+
+
+    class HubConnectionTask extends AsyncTask<HubConnection, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(HubConnection... hubConnections) {
+            HubConnection hubConnection = hubConnections[0];
+            hubConnection.start().blockingAwait();
+//        hubConnection.invoke(String.class, "RequestToTalk", "Guest1234512345");
+            hubConnection.invoke(String.class, "LoadMessage", room);
+            return null;
+        }
+    }
 }
 
-class HubConnectionTask extends AsyncTask<HubConnection, Void, Void>{
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected Void doInBackground(HubConnection... hubConnections) {
-        HubConnection hubConnection = hubConnections[0];
-        hubConnection.start().blockingAwait();
-        hubConnection.invoke(String.class, "RequestToTalk", "Guest1234512345");
-        hubConnection.invoke(String.class, "LoadMessage", "room");
-        return null;
-    }
-}
