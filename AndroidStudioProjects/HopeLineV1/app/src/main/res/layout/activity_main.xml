@@ -7,39 +7,63 @@
     tools:context=".Activities.CommonActivities.MainActivity" >
 
 
-    <Button
-        android:id="@+id/btn_guestSignOn"
+    <RelativeLayout
+        android:id="@+id/layout_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/toolbar_bottom">
+        <!--<Button-->
+            <!--android:id="@+id/btn_guestSignOn"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Talk to Mentor" />-->
+
+
+        <!--<ScrollView-->
+            <!--android:id="@+id/scrollView_filters"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:layout_below="@+id/btn_guestSignOn">-->
+            <!--<RadioGroup-->
+                <!--android:id="@+id/rb_topicList"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center">-->
+
+            <!--</RadioGroup>-->
+        <!--</ScrollView>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_homeMap"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Map"-->
+            <!--android:layout_below="@+id/scrollView_filters"/>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_userSignOn"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Sign in as user"-->
+            <!--android:layout_below="@+id/btn_homeMap"/>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_mentorSignOn"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Sign in as mentor"-->
+            <!--android:layout_below="@+id/btn_userSignOn"-->
+            <!--/>-->
+
+    </RelativeLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/toolbar_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Talk to Mentor" />
-
-
-    <ScrollView
-        android:id="@+id/scrollView_filters"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/btn_guestSignOn">
-        <RadioGroup
-            android:id="@+id/rb_topicList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-        </RadioGroup>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btn_userSignOn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign in as user"
-        android:layout_below="@+id/scrollView_filters"/>
-
-    <Button
-        android:id="@+id/btn_mentorSignOn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign in as mentor"
-        android:layout_below="@+id/btn_userSignOn"/>
+        android:layout_alignParentBottom="true"
+        android:background="@color/grey"
+        app:menu="@menu/menu_user_options"
+        />
 
 </RelativeLayout>

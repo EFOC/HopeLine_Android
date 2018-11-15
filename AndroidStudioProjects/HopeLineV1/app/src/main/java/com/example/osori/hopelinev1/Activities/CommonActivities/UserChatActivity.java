@@ -24,6 +24,9 @@ import com.example.osori.hopelinev1.R;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
+import org.webrtc.PeerConnection;
+import org.webrtc.VideoCapturer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +37,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.osori.hopelinev1.Activities.CommonActivities.LoadingChatActivity.apiConnection;
+
 public class UserChatActivity extends AppCompatActivity{
 
     private Button btnSend;
@@ -41,8 +46,8 @@ public class UserChatActivity extends AppCompatActivity{
     private LinearLayout chatBox;
     private ScrollView chatBoxScroll;
     private ImageView btnReturn;
+    private HubConnection hubConnection;
     private TextView mentorName;
-    private HubConnection hubConnection = HubConnectionBuilder.create("https://hopelineapi.azurewebsites.net/v2/chathub").build();
     private String room;
     private String guestName;
     private ArrayList<String> topicsChosen;
@@ -61,6 +66,27 @@ public class UserChatActivity extends AppCompatActivity{
         btnReturn = (ImageView)findViewById(R.id.btn_chat_return);
         mentorName = (TextView)findViewById(R.id.txt_incoming_user_name);
 
+        Log.d("ChatHub", "Context is: " + this.getApplicationContext());
+
+        hubConnection = apiConnection.getHubConnection();
+
+        hubConnection.on("ReceiveMessage", (user, message)->{
+            Log.d("ChatHub", "Receiving message: " + message);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!user.equals(guestName)){
+                        TextView textView = new TextView(getApplicationContext());
+                        textView.setText(message);
+                        chatBox.addView(textView);
+                        chatBoxScroll.fullScroll(chatBoxScroll.FOCUS_DOWN);
+                    }
+
+                }
+            });
+        }, String.class, String.class);
+
+        
 
         boolean isTopicsEmpty = getIntent().getBooleanExtra("emptyTopics", false);
         if(isTopicsEmpty){
@@ -74,41 +100,17 @@ public class UserChatActivity extends AppCompatActivity{
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hubConnection.invoke(String.class,"RemoveUser", guestName, room, true);
                 finish();
             }
         });
-
-        hubConnection.on("Load", (user, message)->{
-            Log.d("Loading all messages", message);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("Loading: ",message);
-                }
-            });
-        }, String.class, String.class);
-
-        hubConnection.on("ReceiveMessage", (user, message)->{
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(!user.equals(guestName)){
-                        TextView textView = new TextView(getApplicationContext());
-                        textView.append(message);
-                        chatBox.addView(textView);
-                    }
-                }
-            });
-        }, String.class, String.class);
-
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String userInput = inputBar.getText().toString();
                 try{
-                    hubConnection.send("SendMessage", guestName, userInput, room);
-
+                    apiConnection.sendMessage(userInput);
                     Log.d("ChatHub", "room " + room + " guestname: " + guestName);
                     TextView textView = new TextView(v.getContext());
                     textView.setText("\n" + userInput);
@@ -123,25 +125,6 @@ public class UserChatActivity extends AppCompatActivity{
                 }
             }
         });
-        new HubConnectionTask().execute(hubConnection);
-    }
-
-
-    class HubConnectionTask extends AsyncTask<HubConnection, Void, Void>{
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(HubConnection... hubConnections) {
-            HubConnection hubConnection = hubConnections[0];
-            hubConnection.start().blockingAwait();
-//        hubConnection.invoke(String.class, "RequestToTalk", "Guest1234512345");
-            hubConnection.invoke(String.class, "LoadMessage", room);
-            return null;
-        }
     }
 }
 
